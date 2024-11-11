@@ -37,20 +37,37 @@ This mod is a continuation of the original [Advancements Reloaded](https://modri
 # Known Issues
 
 - The mod may not work correctly with other mods that modify the advancements screen.
-- The setting "background style TRANSPARENT" not working correctly on Forge (works on NeoForge).
+- The setting menu cause crashes on Forge (works on NeoForge) due to not released ClothConfig on Forge yet.
 
 # Not Implemented Yet
 
-- [x] ~~Configuration options are not yet available.~~ **Implemented in 0.2.0**
 - [ ] Implement a search engine to locate criterias and advancements
 - [ ] Implementing an API to allow datapack creators to customize the UI directly from their datapacks.
 - [ ] Advanced tracking of different triggers (e.g., _mining 10 blocks_ will show **4/10** instead of just the trigger name `mine_stone`).
+- [x] ~~Configuration options are not yet available.~~ **Implemented in 0.2.0**
 - [x] ~~Achievement categories may display incorrectly on certain GUI scales.~~ **Implemented in 0.2.0 by configuration**
 - [x] ~~Support of Forge, NeoForge and Quilt.~~ **Implemented in 0.5.0**
 
 # Support and Sponsorship
 
 If you enjoy using this mod and would like to support its development, please consider sponsoring via [GitHub Sponsors](https://github.com/sponsors/42atomys) or [Patreon](https://patreon.com/42atomys). Your support will help improve and maintain this project, allowing for more frequent updates and new features.
+
+## How to Update the Mod for a new Minecraft Version
+
+1. Open `./gradlew.properties` and update the version number according to the URL.
+
+2. Run the following commands:
+
+```bash
+./gradlew --refresh-dependencies
+./gradlew clean
+./gradlew genSources
+./gradlew build
+```
+
+3. Refactor and improve any problematic code as necessary.
+
+4. Test the mod in the new Minecraft version for each loader (Fabric, Forge, NeoForge, Quilt).
 
 # Special thanks
 
