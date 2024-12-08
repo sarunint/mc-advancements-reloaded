@@ -39,6 +39,12 @@ jobs:
             **/*.gradle*
             **/**/gradle-wrapper.properties
 
+      - name: Replace version number in gradle.properties
+        if: ${{ github.event.created && startsWith(github.ref, 'refs/tags/') }}
+        run: |
+          sed -i -e "s|0.0.0-PLACEHOLDER|$(echo "${{ github.ref }}" | sed -e "s|refs/tags/v||g" -)|g" gradle.properties
+          cat gradle.properties
+
       - name: Check gradle validation
         uses: gradle/actions/wrapper-validation@v4
 
@@ -64,33 +70,14 @@ jobs:
             build/libs
             **/build/libs/
 
-      - uses: actions/attest-build-provenance@v1
-        name: Attest Build
-        with:
-          subject-path: |
-            build/libs
-            **/build/libs/
-
       - name: Release Version to GitHub
         uses: softprops/action-gh-release@v1
         id: gh_release
         if: ${{ github.event.inputs.release || (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')) }}
         with:
-          body_path: ${{ github.workspace }}/build/CHANGELOG.md
-          tag_name: v${{ env.mod_version }}-${{ env.minecraft_version }}
-          name: v${{ env.mod_version }}-${{ env.minecraft_version }}
+          generate_release_notes: true
           target_commitish: ${{ github.sha }}
           files: |
             **/build/libs/advancements_reloaded-*-fabric-*.jar
             **/build/libs/advancements_reloaded-*-forge-*.jar
             **/build/libs/advancements_reloaded-*-neoforge-*.jar
-
-      - name: Release Version to 3rd Parties
-        uses: gradle/gradle-build-action@v2
-        if: ${{ github.event.inputs.release || (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')) }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CURSE_API_KEY: ${{ secrets.CURSE_API_KEY }}
-          MODRINTH_TOKEN: ${{ secrets.MODRINTH_API_KEY }}
-        with:
-          arguments: publish publishUnified --stacktrace
