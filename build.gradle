@@ -33,26 +33,7 @@ subprojects {
 
     ext {
         releaseChangelog = {
-            def dateFormat = new SimpleDateFormat("yyyy-MM-dd")
-            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"))
-            def date = dateFormat.format(new Date())
-            def changelogFormatText = file("../docs/changelogs/format.md").text.trim()
-            def changelogText = file("../docs/changelogs/${rootProject.version}.md").text.trim()
-            def lastVersion = changelogText.split("\n")[0].split("=")[1].trim()
-            def changelog = changelogFormatText
-                    .replace("%date%", date)
-                    .replace("%changelog%", changelogText)
-                    .replace("%version%", rootProject.version.toString())
-                    .replace("%mc_versions%", rootProject.supported_minecraft_versions)
-                    .replace("%last_version%", lastVersion)
-            StringBuilder changelogBuilder = new StringBuilder()
-            for (String line : changelog.split("\n")) {
-                if (!line.startsWith("!"))
-                    changelogBuilder.append(line).append("\n")
-            }
-            if (!rootProject.buildDir.exists()) rootProject.buildDir.mkdirs()
-            new File(rootProject.buildDir, "CHANGELOG.md").text = changelogBuilder.toString().trim()
-            return changelogBuilder.toString().trim()
+            return ""
         }
     }
 }
@@ -75,6 +56,10 @@ allprojects {
             target(21) // 1.20.5 now uses Java 21
             testWith(21)
         }
+    }
+
+    if (version == '0.0.0-PLACEHOLDER') {
+        version += "." + new Date().format('yyyyMMdd.HHmmss')
     }
 
     repositories {
